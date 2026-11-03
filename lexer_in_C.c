@@ -42,48 +42,54 @@ typedef struct {
 } AFD;
 
 void afd_init(AFD* afd, const char* nome) {
-  /* TODO 1:
-   *   - copie o nome (strncpy ou snprintf)
-   *   - preencha todas as transições com -1
-   *   - zere finais
-   *   - inicial = 0; prox_estado = 1
-   */
-  (void)afd;
-  (void)nome;
+  snprintf(afd->nome,sizeof(afd->nome),"%s",nome);
+
+  for (int i = 0; i < MAX_ESTADOS; i++)
+  {
+    afd->finais[i] = false;
+    for (int j = 0; j < NUM_SIMBOLOS; j++)
+    {
+      afd->transicoes[i][j] = -1;
+    }
+    
+  }
+  
+  afd->inicial = 0;
+  afd->prox_estado = 1;
 }
 
 int afd_novo_estado(AFD* afd) {
   /* TODO 2: retorne afd->prox_estado e incremente. */
-  return -1;
+  return afd->prox_estado++;
 }
 
 void afd_transicao(AFD* afd, int origem, const char* simbolos, int destino) {
   /* TODO 3: para cada caractere c em `simbolos`,
    *         afd->transicoes[origem][(unsigned char)c] = destino. */
-  (void)afd;
-  (void)origem;
-  (void)simbolos;
-  (void)destino;
+  for (int i = 0; i < simbolos[i] != '\0'; i++)
+  {
+    unsigned char c = (unsigned char)simbolos[i];
+    afd->transicoes[origem][c] = destino;
+  }
 }
 
 void afd_marcar_final(AFD* afd, int estado) {
   /* TODO 4 */
-  (void)afd;
-  (void)estado;
+  afd->finais[estado] = true;
 }
 
 int afd_maior_prefixo(const AFD* afd, const char* texto) {
-  /* TODO 4b:
-   *   estado = afd->inicial
-   *   ultimo = afd->finais[estado] ? 0 : -1
-   *   for (i = 0; texto[i]; i++) {
-   *       int prox = afd->transicoes[estado][(unsigned char)texto[i]];
-   *       if (prox < 0) break;
-   *       estado = prox;
-   *       if (afd->finais[estado]) ultimo = i + 1;
-   *   }
-   *   return ultimo;
-   */
+  // TODO 4b:
+      int estado = afd->inicial;
+      int ultimo = afd->finais[estado] ? 0 : -1;
+      for (int i = 0; texto[i]; i++) {
+          int prox = afd->transicoes[estado][(unsigned char)texto[i]];
+          if (prox < 0) break;
+          estado = prox;
+          if (afd->finais[estado]) ultimo = i + 1;
+      }
+      return ultimo;
+   
   return -1;
 }
 
@@ -107,9 +113,20 @@ typedef struct {
  */
 static const Entrada PALAVRAS_RESERVADAS[] = {{"if", "IF"},
                                               {"else", "ELSE"},
+                                              {"switch", "SWITCH"},
+                                              {"case","CASE"},
+                                              {"break","BREAK"}, 
+                                              {"return", "RETURN"},
+                                              {"continue", "CONTINUE"},
+                                              {"start","START"},
+                                              {"end","END"},
+                                              {"main","MAIN"},
+                                              {"model","MODEL"},
+                                              {"for","FOR"},
+                                              {"do","DO"},
+                                              {"while",  "WHILE"},
+                                              {}, 
                                               {"int", "INT"},
-                                              /* {"while",  "WHILE"}, */
-                                              /* {"return", "RETURN"}, */
                                               {NULL, NULL}};
 
 /* Operadores + símbolos simples (reconhecidos por um único trie "FIXO"). */
@@ -134,38 +151,34 @@ static const Entrada FIXOS[] = {/* operadores compostos */
  * ===================================================================== */
 
 void afd_literal(AFD* afd, const char* nome, const char* texto) {
-  /* TODO 5: AFD que reconhece exatamente `texto`.
-   *   afd_init(afd, nome);
-   *   atual = afd->inicial;
-   *   for (p = texto; *p; p++) {
-   *       prox = afd_novo_estado(afd);
-   *       char buf[2] = { *p, '\0' };
-   *       afd_transicao(afd, atual, buf, prox);
-   *       atual = prox;
-   *   }
-   *   afd_marcar_final(afd, atual);
-   */
-  afd_init(afd, nome);
+  // TODO 5: AFD que reconhece exatamente `texto`.
+      afd_init(afd, nome);
+      int atual = afd->inicial;
+      for (const char* p = texto; *p; p++) {
+          int prox = afd_novo_estado(afd);
+          char buf[2] = { *p, '\0' };
+          afd_transicao(afd, atual, buf, prox);
+          atual = prox;
+      }
+      afd_marcar_final(afd, atual);
 }
 
 void afd_conjunto_literais(AFD* afd, const char* nome, const Entrada* ents) {
-  /* TODO 6: trie reconhecendo qualquer um dos `ents[i].lexema`.
-   *   for (i = 0; ents[i].lexema; i++) {
-   *       atual = afd->inicial;
-   *       for (p = ents[i].lexema; *p; p++) {
-   *           unsigned char c = (unsigned char)*p;
-   *           int prox = afd->transicoes[atual][c];
-   *           if (prox < 0) {
-   *               prox = afd_novo_estado(afd);
-   *               char buf[2] = { *p, '\0' };
-   *               afd_transicao(afd, atual, buf, prox);
-   *           }
-   *           atual = prox;
-   *       }
-   *       afd_marcar_final(afd, atual);
-   *   }
-   */
-  afd_init(afd, nome);
+  // TODO 6: trie reconhecendo qualquer um dos `ents[i].lexema`.
+      for (int i = 0; ents[i].lexema; i++) {
+          int atual = afd->inicial;
+          for (const char* p = ents[i].lexema; *p; p++) {
+              unsigned char c = (unsigned char)*p;
+              int prox = afd->transicoes[atual][c];
+              if (prox < 0) {
+                  prox = afd_novo_estado(afd);
+                  char buf[2] = { *p, '\0' };
+                  afd_transicao(afd, atual, buf, prox);
+              }
+              atual = prox;
+          }
+          afd_marcar_final(afd, atual);
+      }
 }
 
 /* =====================================================================
@@ -175,6 +188,14 @@ void afd_conjunto_literais(AFD* afd, const char* nome, const Entrada* ents) {
 void afd_identificador(AFD* afd) {
   /* TODO 7: [INICIAIS_ID][CONTINUACAO_ID]* */
   afd_init(afd, "ID");
+  int e0 = afd->inicial;
+  int e1 = afd_novo_estado(afd);
+
+  afd_transicao(afd,e0,INICIAIS_ID,e1);
+  
+  afd_transicao(afd,e1,CONTINUACAO_ID,e1);
+
+  afd_marcar_final(afd,e1);
 }
 
 void afd_numero(AFD* afd) {
@@ -182,6 +203,25 @@ void afd_numero(AFD* afd) {
    * Para floats, adicione estados/transições para '.' e dígitos.
    */
   afd_init(afd, "NUM");
+
+  int e0 = afd->inicial;
+  int e1 = afd_novo_estado(afd);
+  int e2 = afd_novo_estado(afd);
+  int e3 = afd_novo_estado(afd);
+
+  afd_transicao(afd,e0,DIGITOS,e1);
+  
+  afd_transicao(afd,e1,DIGITOS,e1);
+
+  afd_transicao(afd,e1,".",e2);
+
+  afd_transicao(afd,e2,DIGITOS, e3);
+
+  afd_transicao(afd,e3,DIGITOS,e3);
+
+  afd_marcar_final(afd,e1);
+
+  afd_marcar_final(afd,e3);
 }
 
 /* =====================================================================
@@ -189,17 +229,24 @@ void afd_numero(AFD* afd) {
  * ===================================================================== */
 
 const char* reclassificar(const char* tipo, const char* valor) {
-  /* TODO 9:
-   *   if (strcmp(tipo, "ID") == 0) {
-   *       para cada PALAVRAS_RESERVADAS[i]:
-   *           if (strcmp(lexema, valor) == 0) return tipo;
-   *   } else if (strcmp(tipo, "FIXO") == 0) {
-   *       para cada FIXOS[i]:
-   *           if (strcmp(lexema, valor) == 0) return tipo;
-   *   }
-   *   return tipo;
-   */
-  return tipo;
+  // TODO 9:
+      if (strcmp(tipo, "ID") == 0) {
+          for (int i = 0; PALAVRAS_RESERVADAS[i].lexema != NULL; i++)
+          {
+            if (strcmp(PALAVRAS_RESERVADAS[i].lexema, valor) == 0){
+              return PALAVRAS_RESERVADAS[i].tipo;
+            } 
+          }
+          
+      } else if (strcmp(tipo, "FIXO") == 0) {
+          for (int i = 0; FIXOS[i].lexema != NULL; i++)
+          {
+            if (strcmp(FIXOS[i].lexema, valor) == 0){
+              return FIXOS[i].tipo;
+          }
+        }
+      }
+      return tipo;
 }
 
 /* =====================================================================
@@ -224,15 +271,20 @@ typedef struct {
 
 void lexer_init(Lexer* lx, const char* entrada) {
   /* TODO 10a */
-  (void)lx;
-  (void)entrada;
+  lx->entrada = entrada;
+  lx->pos = 0;
+  lx->linha = 1;
+  lx->coluna = 1;
+  lx->n_regras = 0;
 }
 
 void lexer_add_regra(Lexer* lx, const char* tipo, const AFD* afd) {
   /* TODO 10b: copie *afd e o tipo para lx->regras[lx->n_regras++]. */
-  (void)lx;
-  (void)tipo;
-  (void)afd;
+  if (lx->n_regras < MAX_REGRAS) {
+    lx->regras[lx->n_regras].tipo = tipo;
+    lx->regras[lx->n_regras].afd = *afd;
+    lx->n_regras++;
+  }
 }
 
 static void lexer_avancar(Lexer* lx, int n) {
@@ -263,15 +315,14 @@ bool lexer_proximo(Lexer* lx, Token* out) {
   /* processa o maximo de caracteres */
   int melhor_tam = 0;
   const char* melhor_tipo = NULL;
-  /* TODO 10c:
-   *   for (int i = 0; i < lx->n_regras; i++) {
-   *       int tam = afd_maior_prefixo(&lx->regras[i].afd, resto);
-   *       if (tam > melhor_tam) {
-   *           melhor_tam  = tam;
-   *           melhor_tipo = lx->regras[i].tipo;
-   *       }
-   *   }
-   */
+  // TODO 10c:
+      for (int i = 0; i < lx->n_regras; i++) {
+          int tam = afd_maior_prefixo(&lx->regras[i].afd, resto);
+          if (tam > melhor_tam) {
+              melhor_tam  = tam;
+              melhor_tipo = lx->regras[i].tipo;
+          }
+      }
 
   if (melhor_tam == 0) {
     fprintf(stderr, "Caractere inesperado '%c' em L%d:C%d\n", resto[0], linha,
@@ -287,10 +338,10 @@ bool lexer_proximo(Lexer* lx, Token* out) {
   lexer_avancar(lx, melhor_tam);
 
   /* reclassificação */
-  /* TODO 10d:
-   *   const char *r = reclassificar(out->tipo, out->valor);
-   *   snprintf(out->tipo, sizeof out->tipo, "%s", r);
-   */
+  // TODO 10d:
+      const char *r = reclassificar(out->tipo, out->valor);
+      snprintf(out->tipo, sizeof out->tipo, "%s", r);
+   
 
   return true;
 }
