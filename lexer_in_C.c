@@ -66,7 +66,7 @@ int afd_novo_estado(AFD* afd) {
 void afd_transicao(AFD* afd, int origem, const char* simbolos, int destino) {
   /* TODO 3: para cada caractere c em `simbolos`,
    *         afd->transicoes[origem][(unsigned char)c] = destino. */
-  for (int i = 0; i < simbolos[i] != '\0'; i++)
+  for (int i = 0; simbolos[i] != '\0'; i++)
   {
     unsigned char c = (unsigned char)simbolos[i];
     afd->transicoes[origem][c] = destino;
@@ -125,8 +125,23 @@ static const Entrada PALAVRAS_RESERVADAS[] = {{"if", "IF"},
                                               {"for","FOR"},
                                               {"do","DO"},
                                               {"while",  "WHILE"},
-                                              {}, 
+                                              {"void","VOID"}, 
                                               {"int", "INT"},
+                                              {"float","FLOAT"},
+                                              {"double","DOUBLE"},
+                                              {"char","CHAR"},
+                                              {"string","STRING"},
+                                              {"bool","BOOL"},
+                                              {"array","ARRAY"},
+                                              {"try","TRY"},
+                                              {"catch","CATCH"},
+                                              {"input","INPUT"},
+                                              {"output","OUTPUT"},
+                                              {"list","LIST"},
+                                              {"queue","QUEUE"},
+                                              {"stack","STACK"},
+                                              {"tree","TREE"},
+                                              {"complex", "COMPLEX"},
                                               {NULL, NULL}};
 
 /* Operadores + símbolos simples (reconhecidos por um único trie "FIXO"). */
@@ -165,6 +180,7 @@ void afd_literal(AFD* afd, const char* nome, const char* texto) {
 
 void afd_conjunto_literais(AFD* afd, const char* nome, const Entrada* ents) {
   // TODO 6: trie reconhecendo qualquer um dos `ents[i].lexema`.
+  afd_init(afd,nome);
       for (int i = 0; ents[i].lexema; i++) {
           int atual = afd->inicial;
           for (const char* p = ents[i].lexema; *p; p++) {
@@ -362,7 +378,7 @@ static void construir_regras(Lexer* lx) {
 }
 
 int main(int argc, char** argv) {
-  const char* codigo = "";
+  const char* codigo = "continue";
   char* buffer = NULL;
 
   if (argc > 1) {
