@@ -227,29 +227,34 @@ void afd_identificador(AFD* afd) {
 }
 
 void afd_numero(AFD* afd) {
-  /* TODO 8: [DIGITOS]+
-   * Para floats, adicione estados/transições para '.' e dígitos.
-   */
+  // TODO 8: [DIGITOS]+
   afd_init(afd, "NUM");
+
+  int e0 = afd->inicial;
+  int e1 = afd_novo_estado(afd);
+
+  afd_transicao(afd,e0,DIGITOS,e1);
+  
+  afd_transicao(afd,e1,DIGITOS,e1);
+
+  afd_marcar_final(afd,e1);
+}
+
+void afd_decimal(AFD* afd){
+  afd_init(afd, "REAL");
 
   int e0 = afd->inicial;
   int e1 = afd_novo_estado(afd);
   int e2 = afd_novo_estado(afd);
   int e3 = afd_novo_estado(afd);
 
-  afd_transicao(afd,e0,DIGITOS,e1);
-  
-  afd_transicao(afd,e1,DIGITOS,e1);
+  afd_transicao(afd, e0, DIGITOS, e1);
+  afd_transicao(afd, e1, DIGITOS, e1);
+  afd_transicao(afd, e1, ".", e2);
+  afd_transicao(afd, e2, DIGITOS, e3);
+  afd_transicao(afd, e3, DIGITOS, e3);
 
-  afd_transicao(afd,e1,".",e2);
-
-  afd_transicao(afd,e2,DIGITOS, e3);
-
-  afd_transicao(afd,e3,DIGITOS,e3);
-
-  afd_marcar_final(afd,e1);
-
-  afd_marcar_final(afd,e3);
+  afd_marcar_final(afd, e3);
 }
 
 /* =====================================================================
@@ -388,6 +393,8 @@ static void construir_regras(Lexer* lx) {
   lexer_add_regra(lx, "ID", &afd);
   afd_numero(&afd);
   lexer_add_regra(lx, "NUM", &afd);
+  afd_decimal(&afd);
+  lexer_add_regra(lx, "REAL", &afd);
   afd_conjunto_literais(&afd, "FIXO", FIXOS);
   lexer_add_regra(lx, "FIXO", &afd);
 }
