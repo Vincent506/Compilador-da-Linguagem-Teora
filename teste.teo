@@ -1,0 +1,27 @@
+
+
+int a = 10;
+
+int b = 8;
+
+float c = 9.2;
+
+double d = 9.30789;
+
+bool comparation = false;
+
+if( a > b && a > c || a > d){
+    comparation = true;
+}
+
+while(comparation == true){
+    if(a>0){
+        a--;
+    }else{
+        comparation = false;
+    }
+}
+
+for(int i = 0; i <=10; i++){
+    output(i);
+}

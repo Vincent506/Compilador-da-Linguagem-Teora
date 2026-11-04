@@ -90,7 +90,6 @@ int afd_maior_prefixo(const AFD* afd, const char* texto) {
       }
       return ultimo;
    
-  return -1;
 }
 
 /* =====================================================================
@@ -142,6 +141,9 @@ static const Entrada PALAVRAS_RESERVADAS[] = {{"if", "IF"},
                                               {"stack","STACK"},
                                               {"tree","TREE"},
                                               {"complex", "COMPLEX"},
+                                              {"result","RESULT"},
+                                              {"option","OPTION"},
+                                              {"match","MATCH"},
                                               {NULL, NULL}};
 
 /* Operadores + símbolos simples (reconhecidos por um único trie "FIXO"). */
@@ -153,8 +155,18 @@ static const Entrada FIXOS[] = {/* operadores compostos */
                                 {"=", "ATRIB"},
                                 {"<", "MENOR"},
                                 {">", "MAIOR"},
+                                {"+=","ATRIB-SUM"},
+                                {"++","INCREMENT"},
+                                {"--","DECREMENT"},
+                                {"-=","ATRIB-SUB"},
+                                {"&&", "AND"},
+                                {"||","OR"},
+                                {"&","LAZY-AND"},
+                                {"|","LAZY-OR"},
                                 /* símbolos simples */
+                                {"//","COMENTARIOS"},
                                 {"(", "PAR_ESQ"},
+                                {"'","ASP-SIMPLES"},
                                 {")", "PAR_DIR"},
                                 {"{", "CHAVE_ESQ"},
                                 {"}", "CHAVE_DIR"},
@@ -356,7 +368,10 @@ bool lexer_proximo(Lexer* lx, Token* out) {
   /* reclassificação */
   // TODO 10d:
       const char *r = reclassificar(out->tipo, out->valor);
-      snprintf(out->tipo, sizeof out->tipo, "%s", r);
+      if (r != out->tipo){
+        snprintf(out->tipo, sizeof out->tipo, "%s", r);
+      }
+      
    
 
   return true;
@@ -378,7 +393,7 @@ static void construir_regras(Lexer* lx) {
 }
 
 int main(int argc, char** argv) {
-  const char* codigo = "continue";
+  const char* codigo = "string fogo = 'quente'";
   char* buffer = NULL;
 
   if (argc > 1) {
@@ -414,5 +429,5 @@ int main(int argc, char** argv) {
   }
 
   free(buffer);
-  return 0;
+  return 0; 
 }
