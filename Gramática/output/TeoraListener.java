@@ -17,6 +17,56 @@ public interface TeoraListener extends ParseTreeListener {
 	 */
 	void exitPrograma(TeoraParser.ProgramaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TeoraParser#startBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterStartBlock(TeoraParser.StartBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#startBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitStartBlock(TeoraParser.StartBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#endBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterEndBlock(TeoraParser.EndBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#endBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitEndBlock(TeoraParser.EndBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#funcao}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncao(TeoraParser.FuncaoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#funcao}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncao(TeoraParser.FuncaoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#parametros}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametros(TeoraParser.ParametrosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#parametros}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametros(TeoraParser.ParametrosContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#parametro}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametro(TeoraParser.ParametroContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#parametro}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametro(TeoraParser.ParametroContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TeoraParser#listaComandos}.
 	 * @param ctx the parse tree
 	 */
@@ -107,15 +157,55 @@ public interface TeoraListener extends ParseTreeListener {
 	 */
 	void exitIncremento(TeoraParser.IncrementoContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TeoraParser#comandoOutput}.
+	 * Enter a parse tree produced by {@link TeoraParser#comandoSwitch}.
 	 * @param ctx the parse tree
 	 */
-	void enterComandoOutput(TeoraParser.ComandoOutputContext ctx);
+	void enterComandoSwitch(TeoraParser.ComandoSwitchContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TeoraParser#comandoOutput}.
+	 * Exit a parse tree produced by {@link TeoraParser#comandoSwitch}.
 	 * @param ctx the parse tree
 	 */
-	void exitComandoOutput(TeoraParser.ComandoOutputContext ctx);
+	void exitComandoSwitch(TeoraParser.ComandoSwitchContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#casoBloco}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasoBloco(TeoraParser.CasoBlocoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#casoBloco}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasoBloco(TeoraParser.CasoBlocoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#defaultBloco}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefaultBloco(TeoraParser.DefaultBlocoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#defaultBloco}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefaultBloco(TeoraParser.DefaultBlocoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#comandoTryCatch}.
+	 * @param ctx the parse tree
+	 */
+	void enterComandoTryCatch(TeoraParser.ComandoTryCatchContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#comandoTryCatch}.
+	 * @param ctx the parse tree
+	 */
+	void exitComandoTryCatch(TeoraParser.ComandoTryCatchContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TeoraParser#comandoIO}.
+	 * @param ctx the parse tree
+	 */
+	void enterComandoIO(TeoraParser.ComandoIOContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TeoraParser#comandoIO}.
+	 * @param ctx the parse tree
+	 */
+	void exitComandoIO(TeoraParser.ComandoIOContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code AndExpr}
 	 * labeled alternative in {@link TeoraParser#expressao}.
@@ -128,6 +218,18 @@ public interface TeoraListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAndExpr(TeoraParser.AndExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code StringExpr}
+	 * labeled alternative in {@link TeoraParser#expressao}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringExpr(TeoraParser.StringExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StringExpr}
+	 * labeled alternative in {@link TeoraParser#expressao}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringExpr(TeoraParser.StringExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code TrueExpr}
 	 * labeled alternative in {@link TeoraParser#expressao}.

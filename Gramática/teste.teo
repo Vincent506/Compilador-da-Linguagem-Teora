@@ -1,5 +1,4 @@
 
-
 int a = 10;
 
 int b = 8;
@@ -10,7 +9,7 @@ double d = 9.30789;
 
 bool comparation = false;
 
-if( a > b && a > c || a > d){
+if ( ((a > b) && (a > c)) || (a > d) ) {
     comparation = true;
 }
 

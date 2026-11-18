@@ -1,0 +1,15 @@
+# Binários e executáveis
+teorac
+lexer_main
+
+# Código gerado pelo ANTLR e diretórios de output
+gen/
+output/
+
+# Dependências externas / build (caso prefira que o setup.sh reconstrua)
+vendor/build/
+
+# Pastas de IDE e Sistemas Operamentais
+.vscode/
+.antlr/
+.DS_Store
